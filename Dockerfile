@@ -60,9 +60,6 @@ RUN echo zend_extension = \"$(php -i | grep extension_dir | grep -o '\/.[^ ]*' |
 COPY files/filerun.ini $PHP_PATH/conf.d/
 RUN echo date.timezone = "$TZ" >> $PHP_PATH/conf.d/filerun.ini
 RUN echo error_log = "$DIR/config/logs/php/php_error.log" >> $PHP_PATH/conf.d/filerun.ini
-#generate .sock
-#RUN service php7.0-fpm start
-#RUN chown $NGINX_USER:$NGINX_USER $PHP_PATH/conf.d/filerun.ini /var/run/php/php7.0-fpm.sock
 RUN echo user=$NGINX_USER >> $PHP_PATH/php-fpm.conf && echo group=$NGINX_USER >> $PHP_PATH/php-fpm.conf
 RUN echo listen.owner=$NGINX_USER >> $PHP_PATH/php-fpm.conf && echo listen.group=$NGINX_USER >> $PHP_PATH/php-fpm.conf
 
@@ -71,8 +68,8 @@ RUN sed -i -e "s/user www-data/user $NGINX_USER/g" /etc/nginx/nginx.conf
 RUN rm /etc/nginx/sites-available/default
 COPY files/default /etc/nginx/sites-available/
 RUN sed -i -e "s@CONFIG_PATH@$DIR@g" /etc/nginx/sites-available/default
-RUN sed -i -e "s@/var/log/nginx/access.log@$DIR/logs/nginx/access.log@g" /etc/nginx/nginx.conf
-RUN sed -i -e "s@/var/log/nginx/error.log@$DIR/logs/nginx/error.log@g" /etc/nginx/nginx.conf
+RUN sed -i -e "s@/var/log/nginx/access.log@$DIR/config/logs/nginx/access.log@g" /etc/nginx/nginx.conf
+RUN sed -i -e "s@/var/log/nginx/error.log@$DIR/config/logs/nginx/error.log@g" /etc/nginx/nginx.conf
 
 #clear
 RUN rm -rf /tmp/* \
