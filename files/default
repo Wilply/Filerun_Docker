@@ -1,0 +1,26 @@
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+  listen 443 ssl;
+  listen [::]:443 ssl;
+
+	root CONFIG_PATH/config/filerun;
+
+  index index.html index.htm index.php;
+
+	server_name _;
+
+	ssl_certificate CONFIG_PATH/config/self_keys/cert.crt;
+  ssl_certificate_key CONFIG_PATH/config/self_keys/cert.key;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+
+	location ~ \.php$ {
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    include snippets/fastcgi-php.conf;
+	  fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+	}
+}
