@@ -82,6 +82,6 @@ EXPOSE 443
 VOLUME /app/config
 VOLUME /app/data
 
-COPY files/start.bash /
+COPY files/start.sh /
 COPY files/initdb.sql /
-CMD ["/start.bash"]
+CMD ["/start.sh"]
