@@ -2,12 +2,12 @@
 
 echo FILERUN DOCKERIZED BY WILPLY
 
-if [ ! -s /firststart ] && [ $LOCAL_DB ] ; then
+if [ ! -s /firststart ] && $LOCAL_DB ; then
   echo [INFO] INIT MYSQL
   touch /firststart
   service mysql start
   mysql < /initdb.sql
-elif [[ $LOCAL_DB ]]; then
+elif $LOCAL_DB ; then
   service mysql start
 fi
 
