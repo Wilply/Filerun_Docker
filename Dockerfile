@@ -3,8 +3,8 @@ MAINTAINER Wilply
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
-ARG UID="2000"
-ARG GID="2000"
+ENV UID="2000"
+ENV GID="2000"
 
 ENV TZ="Europe/Paris"
 
@@ -43,7 +43,7 @@ RUN curl -o /tmp/filerun.zip -L http://www.filerun.com/download-latest \
 
 #create folder/user and set permission
 RUN groupadd -g $GID abc && useradd -u $UID -M -N -g abc -d /var/www abc
-COPY --chown=abc:abc root/ /
+COPY root/ /
 WORKDIR /app
 RUN unzip -q -u /tmp/filerun.zip -d filerun/ && \
       chown -R abc:abc filerun/
