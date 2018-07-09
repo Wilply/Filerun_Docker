@@ -5,14 +5,14 @@ server {
   listen 443 ssl;
   listen [::]:443 ssl;
 
-	root CONFIG_PATH/config/filerun;
+	root /app/filerun;
 
   index index.html index.htm index.php;
 
 	server_name _;
 
-	ssl_certificate CONFIG_PATH/config/self_keys/cert.crt;
-  ssl_certificate_key CONFIG_PATH/config/self_keys/cert.key;
+	ssl_certificate /app/self_keys/cert.crt;
+  ssl_certificate_key /app/self_keys/cert.key;
 
 	location / {
 		try_files $uri $uri/ =404;

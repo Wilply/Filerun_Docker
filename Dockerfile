@@ -3,16 +3,15 @@ MAINTAINER Wilply
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
-ENV DIR="/app"
-ENV TZ="Europe/Paris"
-ENV NGINX_USER="abc"
+ARG UID="2000"
+ARG GID="2000"
 
-ENV PHP_PATH="/etc/php/7.0/fpm"
+ENV TZ="Europe/Paris"
+
+ARG PHP_PATH="/etc/php/7.0/fpm"
 
 ENV LOCAL_DB="false"
 ENV LOAD_SMB="false"
-
-WORKDIR $DIR
 
 RUN apt update && apt install -y \
     curl \
@@ -39,37 +38,26 @@ RUN apt update && apt install -y \
     php7.0-opcache
 
 #downloads
-RUN curl -o /tmp/filerun.zip -L http://www.filerun.com/download-latest
-RUN curl -o /tmp/ioncube.tar.gz -L https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
+RUN curl -o /tmp/filerun.zip -L http://www.filerun.com/download-latest \
+      -o /tmp/ioncube.tar.gz -L https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
 
 #create folder/user and set permission
-RUN groupadd $NGINX_USER && useradd -M -N -g $NGINX_USER -d /var/www $NGINX_USER
-RUN mkdir config data
-RUN mkdir config/filerun config/logs config/self_keys
-RUN mkdir config/logs/nginx config/logs/php
-RUN unzip -q -u /tmp/filerun.zip -d $DIR/config/filerun/
-RUN chown -R $NGINX_USER:$NGINX_USER ./ && chmod -R 750 ./
+RUN groupadd -g $GID abc && useradd -u $UID -M -N -g abc -d /var/www abc
+COPY --chown=abc:abc root/ /
+WORKDIR /app
+RUN unzip -q -u /tmp/filerun.zip -d filerun/ && \
+      chown -R abc:abc filerun/
 
 #install ioncube
-RUN tar -xf /tmp/ioncube.tar.gz -C /tmp/
-RUN mv /tmp/ioncube/ioncube_loader_lin_7.0.so `php -i | grep extension_dir | grep -o '\/.[^ ]*' | tail -1`
-RUN echo zend_extension = \"$(php -i | grep extension_dir | grep -o '\/.[^ ]*' | tail -1)/ioncube_loader_lin_7.0.so\" > $PHP_PATH/conf.d/00-ioncube.ini
+RUN tar -xf /tmp/ioncube.tar.gz -C /tmp/ && \
+      cp /tmp/ioncube/ioncube_loader_lin_7.0.so `php -i | grep extension_dir | grep -o '\/.[^ ]*' | tail -1` && \
+      echo zend_extension = \"$(php -i | grep extension_dir | grep -o '\/.[^ ]*' | tail -1)/ioncube_loader_lin_7.0.so\" > $PHP_PATH/conf.d/00-ioncube.ini
 #"
 
 #php
-COPY files/filerun.ini $PHP_PATH/conf.d/
-RUN echo date.timezone = "$TZ" >> $PHP_PATH/conf.d/filerun.ini
-RUN echo error_log = "$DIR/config/logs/php/php_error.log" >> $PHP_PATH/conf.d/filerun.ini
-RUN echo user=$NGINX_USER >> $PHP_PATH/php-fpm.conf && echo group=$NGINX_USER >> $PHP_PATH/php-fpm.conf
-RUN echo listen.owner=$NGINX_USER >> $PHP_PATH/php-fpm.conf && echo listen.group=$NGINX_USER >> $PHP_PATH/php-fpm.conf
-
-#nginx
-RUN sed -i -e "s/user www-data/user $NGINX_USER/g" /etc/nginx/nginx.conf
-RUN rm /etc/nginx/sites-available/default
-COPY files/default /etc/nginx/sites-available/
-RUN sed -i -e "s@CONFIG_PATH@$DIR@g" /etc/nginx/sites-available/default
-RUN sed -i -e "s@/var/log/nginx/access.log@$DIR/config/logs/nginx/access.log@g" /etc/nginx/nginx.conf
-RUN sed -i -e "s@/var/log/nginx/error.log@$DIR/config/logs/nginx/error.log@g" /etc/nginx/nginx.conf
+RUN echo date.timezone = "$TZ" >> $PHP_PATH/conf.d/filerun.ini && \
+      echo user=abc >> $PHP_PATH/php-fpm.conf && echo group=abc >> $PHP_PATH/php-fpm.conf && \
+      echo listen.owner=abc >> $PHP_PATH/php-fpm.conf && echo listen.group=abc >> $PHP_PATH/php-fpm.conf
 
 #clear
 RUN rm -rf /tmp/* \
@@ -79,9 +67,7 @@ RUN rm -rf /tmp/* \
 EXPOSE 80
 EXPOSE 443
 
-VOLUME /app/config
-VOLUME /app/data
+VOLUME /app
+VOLUME /data
 
-COPY files/start.sh /
-COPY files/initdb.sql /
-CMD ["/start.sh"]
+CMD ["/scripts/start.sh"]
