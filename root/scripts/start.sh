@@ -3,7 +3,7 @@ echo \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
 echo \# FILERUN DOCKERIZED BY WILPLY \#
 echo \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
 
-if [ ! -s /app/firststart ]; then
+if [ ! -e /app/firststart ]; then
   touch /app/firststart
   echo [INFO] FIRST START, INIT FILERUN
   echo [INFO] Move filerun files \(can takes some time\)
@@ -21,25 +21,25 @@ if [ ! -s /app/firststart ]; then
   chown -R abc:abc /app
   if $LOCAL_DB ; then
     echo [INFO] Init mysql
-    service mysql start
+    find /var/lib/mysql -type f -exec touch {} \; && service mysql start
     mysql < /scripts/initdb.sql
   fi
 else
   echo [INFO] Using existing configuration
 fi
 
-if [ -s /app/firststart ] && $LOCAL_DB ; then
+if [ -e /app/firststart ] && $LOCAL_DB ; then
   service mysql start
 fi
 
-if [ ! -s /app/self_keys/cert.key ] || [ ! -s /app/self_keys/cert.crt ]; then
+if [ ! -e /app/self_keys/cert.key ] || [ ! -e /app/self_keys/cert.crt ]; then
   echo [INFO] No ssl cert or key found, generate new
   openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /app/self_keys/cert.key -out /app/self_keys/cert.crt -subj "/C=EN/ST=Some-State/L=city/O=Internet Widgits Pty Ltd/OU=section/CN=*"
 else
   echo [INFO] Using existing ssl certificate
 fi
 
-if [ -s /app/smb.sh ] && $LOAD_SMB ; then
+if [ -e /app/smb.sh ] && $LOAD_SMB ; then
   echo [INFO] Mounting sambe shares
   chmod 755 /scripts/smb.sh
   bash /scripts/smb.sh
