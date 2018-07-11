@@ -18,14 +18,17 @@ if [ ! -s /scripts/firststart ]; then
   fi
   echo [INFO] Update permission
   chown -R abc:abc /app
+  if $LOCAL_DB ; then
+    echo [INFO] Init mysql
+    touch /scripts/firststart
+    service mysql start
+    mysql < /scripts/initdb.sql
+  fi
+else
+  echo [INFO] Using existing configuration
 fi
 
-if [ ! -s /scripts/firststart ] && $LOCAL_DB ; then
-  echo [INFO] Init mysql
-  touch /scripts/firststart
-  service mysql start
-  mysql < /scripts/initdb.sql
-elif $LOCAL_DB ; then
+if [ -s /scripts/firststart ] && $LOCAL_DB ; then
   service mysql start
 fi
 
