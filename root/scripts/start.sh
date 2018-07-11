@@ -5,7 +5,7 @@ echo \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
 
 if [ ! -s /scripts/firststart ]; then
   echo [INFO] FIRST START, INIT FILERUN
-  echo [INFO] Move filerun files (can takes some time)
+  echo [INFO] Move filerun files \(can takes some time\)
   mkdir /app/filerun
   mv /filerun/* /app/filerun
   echo [INFO] Create config folder
