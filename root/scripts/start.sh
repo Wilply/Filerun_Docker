@@ -3,7 +3,8 @@ echo \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
 echo \# FILERUN DOCKERIZED BY WILPLY \#
 echo \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
 
-if [ ! -s /scripts/firststart ]; then
+if [ ! -s /app/firststart ]; then
+  touch /app/firststart
   echo [INFO] FIRST START, INIT FILERUN
   echo [INFO] Move filerun files \(can takes some time\)
   mkdir /app/filerun
@@ -20,7 +21,6 @@ if [ ! -s /scripts/firststart ]; then
   chown -R abc:abc /app
   if $LOCAL_DB ; then
     echo [INFO] Init mysql
-    touch /scripts/firststart
     service mysql start
     mysql < /scripts/initdb.sql
   fi
@@ -28,7 +28,7 @@ else
   echo [INFO] Using existing configuration
 fi
 
-if [ -s /scripts/firststart ] && $LOCAL_DB ; then
+if [ -s /app/firststart ] && $LOCAL_DB ; then
   service mysql start
 fi
 
