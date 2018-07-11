@@ -1,13 +1,18 @@
 #!/bin/bash
-
-echo FILERUN DOCKERIZED BY WILPLY
+echo \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
+echo \# FILERUN DOCKERIZED BY WILPLY \#
+echo \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
 
 if [ ! -s /scripts/firststart ]; then
+  echo [INFO] FIRST START, INIT FILERUN
+  echo [INFO] Move filerun files
+  mkdir /app/filerun
+  mv /filerun/* /app/filerun
   echo [INFO] Create config folder
   mkdir /app/logs /app/self_keys
   mkdir /app/logs/nginx /app/logs/php
   if [ $UID -ne 2000 ] || [ $GID -ne 2000 ]; then
-    echo [INFO] UPDATE USER
+    echo [INFO] Update user
     usermod -u $UID abc
     groupmod -g $GID abc
   fi
@@ -16,7 +21,7 @@ if [ ! -s /scripts/firststart ]; then
 fi
 
 if [ ! -s /scripts/firststart ] && $LOCAL_DB ; then
-  echo [INFO] INIT MYSQL
+  echo [INFO] Init mysql
   touch /scripts/firststart
   service mysql start
   mysql < /scripts/initdb.sql

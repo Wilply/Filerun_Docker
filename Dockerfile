@@ -45,9 +45,9 @@ RUN curl -o /tmp/filerun.zip -L http://www.filerun.com/download-latest \
 RUN groupadd -g $GID abc && useradd -u $UID -M -N -g abc -d /var/www abc
 COPY root/ /
 WORKDIR /app
-RUN mkdir filerun && \
-      unzip -q -u /tmp/filerun.zip -d filerun/ && \
-      chown -R abc:abc filerun/
+RUN mkdir /filerun && \
+      unzip -q -u /tmp/filerun.zip -d /filerun/ && \
+      chown -R abc:abc /filerun/
 
 #install ioncube
 RUN tar -xf /tmp/ioncube.tar.gz -C /tmp/ && \
