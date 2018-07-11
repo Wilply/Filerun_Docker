@@ -5,7 +5,7 @@ echo \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
 
 if [ ! -s /scripts/firststart ]; then
   echo [INFO] FIRST START, INIT FILERUN
-  echo [INFO] Move filerun files
+  echo [INFO] Move filerun files (can takes some time)
   mkdir /app/filerun
   mv /filerun/* /app/filerun
   echo [INFO] Create config folder
@@ -38,8 +38,8 @@ fi
 
 if [ -s /app/smb.sh ] && $LOAD_SMB ; then
   echo [INFO] Mounting sambe shares
-  chmod 755 /app/smb.sh
-  bash /app/smb.sh
+  chmod 755 /scripts/smb.sh
+  bash /scripts/smb.sh
 fi
 
 service php7.0-fpm start
