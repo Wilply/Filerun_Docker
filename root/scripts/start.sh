@@ -3,12 +3,16 @@
 echo FILERUN DOCKERIZED BY WILPLY
 
 if [ ! -s /scripts/firststart ]; then
+  echo [INFO] Create config folder
+  mkdir /app/logs /app/self_keys
+  mkdir /app/logs/nginx /app/logs/php
   if [ $UID -ne 2000 ] || [ $GID -ne 2000 ]; then
     echo [INFO] UPDATE USER
     usermod -u $UID abc
     groupmod -g $GID abc
-    chown -R abc:abc /app
   fi
+  echo [INFO] Update permission
+  chown -R abc:abc /app
 fi
 
 if [ ! -s /scripts/firststart ] && $LOCAL_DB ; then
