@@ -15,6 +15,7 @@ ENV LOAD_SMB="false"
 
 RUN apt update && apt install -y \
     curl \
+    cifs-utils \
     gnupg2 \
     unzip \
     nginx \
