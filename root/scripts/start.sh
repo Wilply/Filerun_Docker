@@ -24,6 +24,8 @@ if [ ! -e /app/firststart ]; then
     find /var/lib/mysql -type f -exec touch {} \; && service mysql start
     mysql < /scripts/initdb.sql
   fi
+  echo [INFO] Move smbshare
+  mv /scripts/smb.sh /app/smb.sh
 else
   echo [INFO] Using existing configuration
 fi
@@ -41,8 +43,8 @@ fi
 
 if [ -e /app/smb.sh ] && $LOAD_SMB ; then
   echo [INFO] Mounting sambe shares
-  chmod 755 /scripts/smb.sh
-  bash /scripts/smb.sh
+  chmod 755 /app/smb.sh
+  bash /app/smb.sh
 fi
 
 service php7.0-fpm start
