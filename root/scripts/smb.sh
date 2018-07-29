@@ -6,10 +6,11 @@
 ###ADD HOSTNAME AND CREATE MOUTN DIR (uncomment the following lines):
 #if [ ! -e /smbinit ]; then
   #touch /smbinit
-  #echo [INFO][SMB] Add hostname and create mount directory
-  #echo host_ip hostname1 hostname2 >> /etc/hosts
+  #echo [INFO][SMB] Create mount directory
   #mkdir /mnt/dir1 /mnt/dir2
 #fi
+#echo [INFO][SMB] Add hostname
+#echo host_ip hostname1 hostname2 >> /etc/hosts
 
 ###MOUNT SHARES
-#mount -t cifs -o username=shareuser,password=shareuserpassword //path/to/share /path/to/local
+#mount -t cifs -o username=shareuser,password=shareuserpassword,uid=abc,gid=abc //path/to/share /path/to/local
