@@ -1,4 +1,7 @@
 # Filerun_Docker
+
+/!\ DEPRECIATED DO NOT USE /!\
+
 Dockerized Filerun app with smb share support
 
 
